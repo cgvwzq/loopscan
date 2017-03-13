@@ -1,0 +1,87 @@
+svg {
+    font: 10px sans-serif;
+}
+
+.axis path, .axis line {
+    fill: none;
+    stroke: lightgrey;
+    stroke-dasharray: "5, 10";
+}
+
+.x.axis path {
+    display: none;
+}
+
+.line {
+    fill: none;
+    stroke: steelblue;
+    stroke-width: 1.5px;
+}
+
+.grid .tick {
+    storke: lightgrey;
+    opacity: 0.7;
+}
+
+.grid path {
+    stroke-width: 0;
+}
+
+.navigator .data {
+    fill: lightgrey;
+    stroke-width: 0px;
+}
+
+.navigator .line {
+    fill: none;
+    stroke: darkgrey;
+    stroke-width: 1px;
+}
+
+.navigator .viewport {
+    stroke: grey;
+    fill: black;
+    fill-opacity: 0.2;
+}
+
+.overlay {
+    stroke-width: 0px;
+    fill-opacity: 0;
+}
+
+.legend {
+    font: 12px "DejaVu Sans Mono";
+    width: 30%;
+    padding: 1px 20px;
+    margin: 10px auto;
+    border: 1px solid darkgrey;
+    background-color: lightgrey;
+}
+
+p.row {
+    background-color: white;
+    padding: 1px;
+    width: 100%;
+    margin: 2px 0px;
+}
+
+p.row label {
+    width: 20%;
+    display: inline-block;
+    text-align: center;
+    font-weight: bold;
+}
+
+p.row .viewport {
+    width: 25%;
+    display: inline-block;
+    text-align: right;
+    color: darkgrey; 
+}
+
+p.row .total {
+    width: 25%;
+    display: inline-block;
+    text-align: right;
+}
+

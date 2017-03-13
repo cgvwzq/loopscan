@@ -1,0 +1,145 @@
+<!doctype html>
+<html>
+<head>
+    <title>Loopscan</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="css/monitor.css">
+    <script src="js/d3.v3.min.js"></script>
+    <script src="js/monitor.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/loopscan.js"></script>
+    <style>
+    body {
+        width: 95%;
+        margin: 0 auto;
+        font: 12px sans-serif;
+    }
+    button,option,select {
+        font: 11px sans-serif;
+    }
+    main {
+        margin: 0 auto;
+    }
+    footer {
+        text-align: center;
+    }
+    div#export {
+        text-align: center;
+        display: none;
+    }
+    </style>
+</head>
+<body>
+<script>
+function start() {
+    try {
+        EventLoops[options.value].start();
+    } catch(e) {}
+}
+
+function stop() {
+    try {
+        let buffer = EventLoops[options.value].stop();
+        let raw = [].slice.call(buffer, 0, i); 
+        raw = raw.map((t,i) => ({time:t, delay:t-buffer[i-1]})).slice(1);
+        drawMonitor(raw, "#result");
+        document.getElementById('export').style = "display:block";
+    } catch(e) {}
+}
+
+function reload() {
+    buffer = null;
+    location.reload();
+}
+
+function exportTrace() {
+    if (buffer) {
+        let json = '[' + buffer.slice(0,i) + ']';
+        let blob = new Blob([json], {type: "application/json"});
+        let url  = URL.createObjectURL(blob);
+        let a = document.createElement('a');
+        a.href = url;
+        a.download = 'delaytrace.json';
+        a.click();
+    } else {
+        alert("err: no trace");
+    }
+}
+
+function openTarget(url) {
+    let opt = document.querySelector('input[name="openAs"]:checked').value;
+    switch(opt) {
+        case "iframe":
+            let f = document.createElement('iframe');
+            f.src = url;
+            f.style = "width:1px;height:1px";
+            document.body.appendChild(f);
+            break;
+        case "popup":
+            window.open(url, '_blank', 'width=600,height=600');
+            break;
+        case "contab":
+            let a = document.createElement('a');
+            a.target = "_blank";
+            a.href = url;
+            a.click();
+            break;
+        case "distab":
+            let b = document.createElement('a');
+            b.target = "_blank";
+            b.rel = "noopener";
+            b.href = url;
+            b.click();
+            break;
+        default:
+            break;
+    }
+}
+</script>
+<header>
+    <h1>Loopscan</h1>
+    <h4>monitoring shared event loops with Javascript</h4>
+    <div id="description">
+        <p>TODO: add description...</p>
+    </div>
+</header>
+<main>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    for (let e in EventLoops) {
+        let o = document.createElement('option');
+        o.value = e;
+        o.innerText = EventLoops[e].name;
+        options.appendChild(o);
+    }
+});
+</script>
+<label>Spy on: </label><select name="target" id="options"></select>
+<br><br>
+<button onclick="start()">Start</button>
+<button onclick="stop()">Stop</button>
+<button onclick="reload()">Clear</button>
+<br>
+<button onclick="start();setTimeout(stop, parseInt(nextElementSibling.value,10))">Measure during #ms</button>
+<input type="number" min="0" step="100" value="3000">
+<br>
+<input type="url" placeholder="URL">
+<button onclick="openTarget(previousElementSibling.value)">Open</button>
+<br>
+<label>Open as: </label>
+<input type="radio" name="openAs" value="iframe" checked>iframe
+<input type="radio" name="openAs" value="popup">popup
+<input type="radio" name="openAs" value="contab">connected tab
+<input type="radio" name="openAs" value="distab">disconnected tab
+<hr>
+<div id="result"></div>
+<div id="export">
+    <button onclick="exportTrace()">Export JSON</button>
+</div>
+</main>
+<hr>
+<footer>
+    <p>pepe vila - 2017</p>
+</footer>
+</body>
+</html>
