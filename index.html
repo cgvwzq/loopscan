@@ -89,7 +89,9 @@ function openTarget(url) {
             b.target = "_blank";
             b.rel = "noopener";
             b.href = url;
+            document.body.appendChild(b);
             b.click();
+            document.body.removeChild(b);
             break;
         default:
             break;

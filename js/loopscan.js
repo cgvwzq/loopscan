@@ -1,5 +1,5 @@
 // Global state vars
-var i, buffer, _auxWorker, _auxCb;
+var i, buffer, _auxWorker, _auxCb, _auxTimer;
 
 const SZ = 200000; // Pre-allocated elements
 
@@ -10,7 +10,7 @@ function save(t) {
 const EventLoops = {
 
     renderer_mt : {
-        name : "Renderer's Main Thread",
+        name : "Renderer's Main Thread (with postMessage)",
         loop : function loop(e) {
             save(e.timeStamp);
             self.postMessage(0, '*');
@@ -26,6 +26,22 @@ const EventLoops = {
             return buffer;
         }
 
+    },
+
+    renderer_mt_timeout : {
+        name : "Renderer's Main Thread (with timers)",
+        loop : function loop() {
+            save(performance.now());
+        },
+        start : function start() {
+            i = 0;
+            buffer = new Float64Array(SZ);
+            _auxTimer = setInterval(this.loop, 0);
+        },
+        stop : function stop() {
+            clearInterval(_auxTimer);
+            return buffer;
+        }
     },
 
     host_io_net : {
