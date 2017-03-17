@@ -60,7 +60,9 @@ function exportTrace() {
         let a = document.createElement('a');
         a.href = url;
         a.download = 'delaytrace.json';
+        document.body.appendChild(a);
         a.click();
+        document.body.removeChild(a);
     } else {
         alert("err: no trace");
     }
@@ -89,9 +91,7 @@ function openTarget(url) {
             b.target = "_blank";
             b.rel = "noopener";
             b.href = url;
-            document.body.appendChild(b);
             b.click();
-            document.body.removeChild(b);
             break;
         default:
             break;
