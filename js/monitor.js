@@ -26,6 +26,7 @@ function drawMonitor (data, id) {
 
     // Define chart where we draw
     var plotChart = d3.select(id).classed("chart", true).append("svg")
+			.style("font", "10px sans-serif")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
             .append("g")
@@ -78,7 +79,7 @@ function drawMonitor (data, id) {
         .append("rect")
         .attr({width: width, height: height});
 
-    // Define line that we're going to shaw
+    // Define line that we're going to show
     var line = d3.svg.line()
             .x(function(d, i) { return xScale(d.time); })
             .y(function(d, i) { return yScale(d.delay); });
@@ -86,6 +87,9 @@ function drawMonitor (data, id) {
     // Draw it
     var dataLine = plotArea.append("path")
         .attr("class", "line")
+		.style("fill", "none")
+		.style("stroke", "steelblue")
+		.style("stroke-width", "1.5px")
         .attr("d", line(dataToRender));
 
     /* LOWER CHART */
@@ -97,6 +101,7 @@ function drawMonitor (data, id) {
     // Define chart where we draw
     var navChart = d3.select(id).classed("chart", true).append("svg")
             .classed("navigator", true)
+			.style("font", "10px sans-serif")
             .attr("width", navWidth + margin.left + margin.right)
             .attr("height", navHeight + margin.top + margin.bottom)
             .append("g")
@@ -135,11 +140,16 @@ function drawMonitor (data, id) {
     // Draw area
     navChart.append("path")
         .attr("class", "data")
+		.style("fill", "lightgrey")
+		.style("stroke-width", "0px")
         .attr("d", navData(mapData));
 
     // Draw line
     navChart.append("path")
         .attr("class", "line")
+		.style("stroke", "darkgrey")
+		.style("fill", "none")
+		.style("storke-width", "1px")
         .attr("d", navLine(mapData));
 
     /* VIEWPORT O THE LOW CHART */
@@ -166,6 +176,9 @@ function drawMonitor (data, id) {
     // Add viewport to detect events on the whole chart
     navChart.append("g")
         .attr("class", "viewport")
+		.style("stroke", "grey")
+		.style("fill", "black")
+		.style("fill-opacity", "0.2")
         .call(viewport)
         .selectAll("rect")
         .attr("height", navHeight);
@@ -196,6 +209,8 @@ function drawMonitor (data, id) {
     plotArea.append("path")
         .attr("class", "overlay")
         .attr("d", overlay(dataToRender))
+		.style("fill-opacity", "0")
+		.style("stroke-width", "0px")
         .call(zoom);
 
     viewport.on("brushend", function() {
@@ -225,6 +240,22 @@ function drawMonitor (data, id) {
     updateViewportFromChart();
     updateZoomFromChart();
     updateViewportLegend();
+
+	// Remove CSS to allow export
+	d3.selectAll(".axis path, .axis line")
+		.style("stroke", "lightgrey")
+		//.style("stroke-dasharray", "5, 10")
+		.style("fill", "none");
+
+	d3.selectAll(".x.axis path")
+		.style("display", "none");
+
+	d3.selectAll(".grid .tick")
+		.style("storke", "lightgrey")
+		.style("opacity", "0.7");
+
+	d3.selectAll(".grid path")
+		.style("stroke-width", "0px");
 
     /* AUX FUNCTIONS */
 

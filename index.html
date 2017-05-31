@@ -68,6 +68,27 @@ function exportTrace() {
     }
 }
 
+function exportSVG() {
+	let svg = document.getElementsByTagName('svg')[0];
+	// FIX styles in SVG
+	if (svg) {
+		let html = d3.select("svg")
+		.attr("version", 1.1)
+		.attr("xmlns", "http://www.w3.org/2000/svg")
+		.node().outerHTML;
+		let blob = new Blob([html], {type: "image/svg+xml"});
+		let url = URL.createObjectURL(blob);
+		let link = document.createElement("a");
+		link.href = url;
+		link.download = "graph.svg";
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);	
+	} else {
+		alert("err: no graphic");
+	}
+}
+
 function openTarget(url) {
     let opt = document.querySelector('input[name="openAs"]:checked').value;
     switch(opt) {
@@ -137,6 +158,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <div id="result"></div>
 <div id="export">
     <button onclick="exportTrace()">Export JSON</button>
+    <button onclick="exportSVG()">Export Graphic</button>
 </div>
 </main>
 <hr>
