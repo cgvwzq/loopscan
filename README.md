@@ -1,6 +1,8 @@
 # Loopscan
 Tool for monitoring shared event loops with Javascript
 
+<img src="http://vwzq.net/img/loopscan_screenshot.png" alt="loopscan screenshot" width="80%">
+
 ## Current support
 
 * Renderer's Main Thread (with `postMessage`)
