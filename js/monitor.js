@@ -14,8 +14,8 @@ function drawMonitor (data, id) {
 
     var xMin = d3.min(data, function(d) { return d.time; }),
         xMax = d3.max(data, function(d) { return d.time; }),
-        yMin = d3.min(data, function(d) { return d.delay; }),
-        yMax = d3.max(data, function(d) { return d.delay; });
+        yMax = d3.max(data, function(d) { return d.delay; }),
+        yMin = d3.min(data, function(d) { return d.delay||yMax; });
 
     var dataToRender = data.slice(0, DEF_RENDER_SIZE);
 
@@ -69,7 +69,7 @@ function drawMonitor (data, id) {
         .attr("dy", ".71em")
         .style("text-anchor", "end")
         .text("time (ms)");
-    
+
     // Draw main chart (after axis to be paint on top)
     var plotArea = plotChart.append("g")
             .attr("clip-path", "url(#plotAreaClip)");
@@ -82,7 +82,7 @@ function drawMonitor (data, id) {
     // Define line that we're going to show
     var line = d3.svg.line()
             .x(function(d, i) { return xScale(d.time); })
-            .y(function(d, i) { return yScale(d.delay); });
+            .y(function(d, i) { return yScale(d.delay||yMin); });
 
     // Draw it
     var dataLine = plotArea.append("path")
@@ -130,12 +130,12 @@ function drawMonitor (data, id) {
     var navData = d3.svg.area()
             .x(function(d) { return navXScale(d.time); })
             .y0(navHeight)
-            .y1(function(d) { return navYScale(d.delay); });
+            .y1(function(d) { return navYScale(d.delay||yMin); });
 
     // Define line
     var navLine = d3.svg.line()
             .x(function(d) { return navXScale(d.time); })
-            .y(function(d) { return navYScale(d.delay); });
+            .y(function(d) { return navYScale(d.delay||yMin); });
 
     // Draw area
     navChart.append("path")
@@ -194,7 +194,7 @@ function drawMonitor (data, id) {
                 } else if (dom[1] > xMax) {
                     var x = zoom.translate()[0] - xScale(xMax) + xScale.range()[1];
                     zoom.translate([x, 0]);
-                } 
+                }
                 redrawChart();
                 updateViewportFromChart();
                 updateViewportLegend();
@@ -350,7 +350,7 @@ function drawMonitor (data, id) {
 
         return result;
     }
-    
+
     // Function to summarize the raw data
     // store all consecutive values in MEDIAN+-IQR in one
     function summarize(raw) {
@@ -362,7 +362,7 @@ function drawMonitor (data, id) {
         }
 
         res = [];
-        buff = []; 
+        buff = [];
 
         for (i=0; i<data.length; i++) {
             buff.push(data[i]);
@@ -382,4 +382,3 @@ function drawMonitor (data, id) {
         return res;
     }
 }
- 
